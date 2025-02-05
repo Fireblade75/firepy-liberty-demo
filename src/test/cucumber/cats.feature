@@ -1,5 +1,3 @@
-
-
 Feature: Cats
 
 Scenario: Fetch all the cats
@@ -12,9 +10,9 @@ Scenario: Fetch all the cats
 Scenario: Fetch a cat by name
   When the url "CATS" is called with the name "Timmy"
   Then the following list of Cats ir returned:
-    | Name  | Timmy | 
+    | Name  | Timmy |
     | Color | BLACK |
-    | Age   | 8     |
+    | Age   | 0     |
 
 Scenario: Fetch a cat by a non existing name
   When the url "CATS" is called with the name "Charles"

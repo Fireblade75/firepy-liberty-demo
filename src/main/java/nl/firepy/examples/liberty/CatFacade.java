@@ -32,7 +32,7 @@ public class CatFacade {
             if (cat.isPresent()) {
                 return Response.ok(List.of(cat)).build();
             } else {
-                return Response.status(204).entity(List.of()).build();
+                return Response.ok(List.of()).build();
             }
         }
     }
