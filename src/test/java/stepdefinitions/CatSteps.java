@@ -20,7 +20,10 @@ import com.google.gson.Gson;
 public class CatSteps {
 
     private static final String BASE_URL = "http://localhost:9080/firepy-liberty-app/";
-    private HashMap<String, String> data = new HashMap<>();
+    private final HashMap<String, String> data = new HashMap<>();
+
+    private final Gson gson = new Gson();
+    private final Type catListType = new TypeToken<List<CatDto>>() {}.getType();
 
     @When("the url {string} is called")
     public void theUrlIsCalled(String url) {
@@ -50,7 +53,6 @@ public class CatSteps {
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        System.err.println(uri.toString());
         try {
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient
@@ -74,15 +76,13 @@ public class CatSteps {
     @Then("the following list of Cats ir returned:")
     public void theFollowingListOfCatsIrReturned(DataTable dataTable) {
         String actual = data.get("RESPONSE");
+        List<CatDto> actualCats = gson.fromJson(actual, catListType);
+
         List<CatDto> expectedCats = new ArrayList<>();
         for (int i = 1; i < dataTable.width(); i++) {
             List<String> column = dataTable.column(i);
             expectedCats.add(convertColumnToCat(dataTable.column(0), column));
         }
-        
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<CatDto>>() {}.getType();
-        List<CatDto> actualCats = gson.fromJson(actual, listType);
 
         if (actualCats.size() != expectedCats.size()) {
             throw new RuntimeException("Actual size was " + actualCats.size() + ", expected size was " + expectedCats.size());
@@ -93,9 +93,7 @@ public class CatSteps {
                     .filter(cat -> cat.getName().equals(expectedCat.getName())).findAny()
                     .orElseThrow(() -> new RuntimeException("No actual cat found for name " + expectedCat.getName()));
 
-            if ((expectedCat.getAge() != actualCat.getAge()) || (!expectedCat.getColor().equals(actualCat.getColor()))) {
-                throw new RuntimeException("Expected cat " + expectedCat.getName() + " did not match the actual cat");
-            }
+            compareCats(expectedCat, actualCat);
         }
     }
 
@@ -111,4 +109,14 @@ public class CatSteps {
         return new CatDto(name, FurColor.valueOf(color), age);
     }
 
+    private void compareCats(CatDto expectedCat, CatDto actualCat) {
+        if (expectedCat.getAge() != actualCat.getAge()) {
+            throw new RuntimeException("Expected cat's (" + expectedCat.getName() + ") age " + expectedCat.getAge()
+                    + " did not match the actual cat's age " + actualCat.getAge());
+        }
+        if (!expectedCat.getColor().equals(actualCat.getColor())) {
+            throw new RuntimeException("Expected cat's (" + expectedCat.getColor() + ") color " + expectedCat.getAge()
+                    + " did not match the actual cat's color " + actualCat.getColor());
+        }
+    }
 }

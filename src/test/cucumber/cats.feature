@@ -12,7 +12,7 @@ Scenario: Fetch a cat by name
   Then the following list of Cats ir returned:
     | Name  | Timmy |
     | Color | BLACK |
-    | Age   | 0     |
+    | Age   | 8     |
 
 Scenario: Fetch a cat by a non existing name
   When the url "CATS" is called with the name "Charles"
