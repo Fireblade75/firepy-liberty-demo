@@ -102,6 +102,10 @@ public class CatSteps {
         int ageIndex = indexColumn.indexOf("Age");
         int colorIndex = indexColumn.indexOf("Color");
 
+        if (nameIndex == -1 || ageIndex == -1 || colorIndex == -1) {
+            throw new IllegalArgumentException("Required columns not found in index");
+        }
+
         String name = dataColumn.get(nameIndex);
         int age = Integer.parseInt(dataColumn.get(ageIndex));
         String color = dataColumn.get(colorIndex);
@@ -109,6 +113,12 @@ public class CatSteps {
         return new CatDto(name, FurColor.valueOf(color), age);
     }
 
+    /**
+     * Compares two CatDto objects for equality (age and color).
+     * @param expectedCat the expected cat data
+     * @param actualCat the actual cat data
+     * @throws RuntimeException if cats don't match
+     */
     private void compareCats(CatDto expectedCat, CatDto actualCat) {
         if (expectedCat.getAge() != actualCat.getAge()) {
             throw new RuntimeException("Expected cat's (" + expectedCat.getName() + ") age " + expectedCat.getAge()
