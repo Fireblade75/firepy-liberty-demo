@@ -97,6 +97,12 @@ public class CatSteps {
         }
     }
 
+    /**
+     * Converts a list of column data to a CatDto object.
+     * @param indexColumn the index column
+     * @param dataColumn the data column
+     * @return the CatDto object
+     */
     private CatDto convertColumnToCat(List<String> indexColumn, List<String> dataColumn) {
         int nameIndex = indexColumn.indexOf("Name");
         int ageIndex = indexColumn.indexOf("Age");
